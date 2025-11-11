@@ -9,5 +9,20 @@ from model.museoDTO import Museo
 class MuseoDAO:
     def __init__(self):
         pass
-
-    # TODO
+        # TODO
+    @staticmethod
+    def get_musei():
+        cnx=ConnessioneDB.get_connection()
+        cursor=cnx.cursor(dictionary=True)
+        query = """SELECT * FROM museo"""
+        cursor.execute(query)
+        result=[]
+        for row in cursor:
+            museo=Museo(row["id"],
+                        row["nome"],
+                        row["tipologia"]
+                        )
+            result.append(museo)
+        cnx.close()
+        cursor.close()
+        return result

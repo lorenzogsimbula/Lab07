@@ -1,4 +1,7 @@
 import flet as ft
+from flet.core.dropdown import Dropdown
+
+
 from UI.alert import AlertManager
 
 '''
@@ -37,9 +40,35 @@ class View:
 
         # --- Sezione 2: Filtraggio ---
         # TODO
+        self._dd_musei=ft.Dropdown(editable= False,
+                                    label="Museo",
+                                    width=300,
+                                    options=self.controller.popola_dd_museo()+[ft.DropdownOption("Nessun Filtro")]
+                                   )
+
+
+        self._dd_epoche=ft.Dropdown(editable=False,
+                                    label="Epoca",
+                                    width=200,
+                                    options=self.controller.popola_dd_epoca() + [ft.DropdownOption("Nessun Filtro")],
+
+                                    )
+
+        self.row = ft.Row([self._dd_musei, self._dd_epoche],
+                                    alignment=ft.MainAxisAlignment.CENTER,
+                                    spacing=20
+                          )
 
         # Sezione 3: Artefatti
         # TODO
+        self.lv_artefatti=ft.ListView(expand=True,spacing=10,padding=20)
+        self.btn_artefatti=ft.ElevatedButton(text="Mostra artefatti",
+                                            on_click=self.controller.mostra_artefatti
+                                             )
+        self.row2 = ft.Row(controls=[self.btn_artefatti],
+                           alignment=ft.MainAxisAlignment.CENTER)
+        self.row3 = ft.Row(controls=[self.lv_artefatti],
+                           alignment=ft.MainAxisAlignment.CENTER)
 
         # --- Toggle Tema ---
         self.toggle_cambia_tema = ft.Switch(label="Tema scuro", value=True, on_change=self.cambia_tema)
@@ -54,15 +83,21 @@ class View:
 
             # Sezione 2: Filtraggio
             # TODO
+            self.row,
+            ft.Divider(),
 
             # Sezione 3: Artefatti
             # TODO
+            self.row2,
+            self.row3
+
         )
 
         self.page.scroll = "adaptive"
         self.page.update()
 
-    def cambia_tema(self, e):
+
+    def cambia_tema(self,e):
         """ Cambia tema scuro/chiaro """
         self.page.theme_mode = ft.ThemeMode.DARK if self.toggle_cambia_tema.value else ft.ThemeMode.LIGHT
         self.toggle_cambia_tema.label = "Tema scuro" if self.toggle_cambia_tema.value else "Tema chiaro"
